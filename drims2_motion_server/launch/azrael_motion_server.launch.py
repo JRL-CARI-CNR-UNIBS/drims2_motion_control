@@ -27,7 +27,7 @@ def generate_launch_description():
 
     motion_server_config_path_cmd = DeclareLaunchArgument(
         'motion_server_config_path',
-        default_value=pkg_dir + '/config/omron_motion_server_config.yaml',
+        default_value=pkg_dir + '/config/azrael_motion_server_config.yaml',
         description='Full path to the config file')
     namespace_cmd = DeclareLaunchArgument(
         'namespace',
@@ -38,7 +38,7 @@ def generate_launch_description():
         package='drims2_motion_server',
         executable='motion_server',
         name='motion_server_node',
-        namespace=LaunchConfiguration('namespace'),
+        # namespace=LaunchConfiguration('namespace'),
         output='screen',
         parameters=[
             LaunchConfiguration('motion_server_config_path'),

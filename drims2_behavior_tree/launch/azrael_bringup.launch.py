@@ -22,32 +22,30 @@ from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
+from moveit_configs_utils import MoveItConfigsBuilder
+
+
+
 def generate_launch_description():
-    pkg_dir = get_package_share_directory('drims2_motion_server')
+    pkg_dir = get_package_share_directory('drims2_behavior_tree')
 
     motion_server_config_path_cmd = DeclareLaunchArgument(
-        'motion_server_config_path',
-        default_value=pkg_dir + '/config/omron_motion_server_config.yaml',
+        'bt_executer_config_path',
+        default_value=pkg_dir + '/config/behavior_tree_config_azrael.yaml',
         description='Full path to the config file')
-    namespace_cmd = DeclareLaunchArgument(
-        'namespace',
-        default_value='',
-        description='Motion server namespace')
-    
-    motion_server_node = Node(
-        package='drims2_motion_server',
-        executable='motion_server',
-        name='motion_server_node',
-        namespace=LaunchConfiguration('namespace'),
+
+    bt_executer_node = Node(
+        package='drims2_behavior_tree',
+        executable='bt_executer_node',
+        name='bt_executer_node',
         output='screen',
         parameters=[
-            LaunchConfiguration('motion_server_config_path'),
+            LaunchConfiguration('bt_executer_config_path'),
         ])
     
     # Create the launch description and populate
     ld = LaunchDescription()
 
     ld.add_action(motion_server_config_path_cmd)
-    ld.add_action(motion_server_node)
-    ld.add_action(namespace_cmd)
+    ld.add_action(bt_executer_node)
     return ld

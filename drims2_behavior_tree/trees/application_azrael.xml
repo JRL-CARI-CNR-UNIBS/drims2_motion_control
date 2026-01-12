@@ -1,0 +1,96 @@
+<root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Sequence>
+            
+            <Script code=" azrael_front:='-1.378331486378805; -1.9878455601134242; -0.8133238554000854; -1.9102231464781703; 1.5776188373565674; 1.7093149423599243' " />
+           
+            <Script code=" table_position:='8.792; -0.969; 0.000' " />
+            <Script code=" table_orientation:='0.000; 0.000; -0.716; 0.698' " />
+
+            <Script code=" pick_position:='-0.004; 0.924; 0.475' " />
+            <Script code=" pick_orientation:='0.725; -0.688; -0.001; -0.001' " />
+
+            <Script code=" pick_position_flex:='0.090; 0.073; 0.037' " />
+            <Script code=" pick_orientation_flex:='0.668; 0.742; 0.049; -0.007' " />
+
+            <Script code=" azrael_ur_rest_position:='0.028; 0.317; 0.78' " />
+            <Script code=" azrael_ur_rest_orientation:='0.725; -0.688; -0.001; -0.001' " />
+
+            <Script code=" azrael_rest_position:='2.885; -1.642; 0.000' "/>
+            <Script code=" azrael_rest_orientation:='0.000; 0.000; 0.701; 0.713' "/>
+
+            <Script code=" sharework_position:='6.564; -0.557; 0.000' "/>
+            <Script code=" sharework_orientation:='0.000; 0.000; 0.697; 0.717' "/>
+
+            <!-- <Script code=" sharework_ur_approach_position:='0.007; 0.712; 0.861' "/>
+            <Script code=" sharework_ur_approach_orientation:='0.725; -0.688; -0.001; -0.001' "/> -->
+            <Script code=" sharework_ur_approach_position:='0.206; 0.711; 0.857' "/>
+            <Script code=" sharework_ur_approach_orientation:='0.708; -0.706; -0.009; -0.009' "/>
+
+            <!-- <Script code=" sharework_ur_position:='0.178; 0.722; 0.731' "/>
+            <Script code=" sharework_ur_orientation:='0.708; -0.706; -0.001; -0.001' "/> -->
+            <Script code=" sharework_ur_position:='0.205; 0.893; 0.733' "/>
+            <Script code=" sharework_ur_orientation:='0.708; -0.706; -0.009; -0.009' "/>
+
+            <ActionTimer start="true" action_name="move_to_rest" log_path="/tmp/action_timer_azrael.log"/>
+            <MoveToPose action_name="/move_to_pose" cartesian_motion="true" frame_id="azrael/base_link" position="{azrael_ur_rest_position}" orientation="{azrael_ur_rest_orientation}"/>
+            <GripperCommand action_name="/gripper_action_controller/gripper_cmd" position="0.0" max_effort="20.0"/>
+            <ActionTimer start="false" action_name="move_to_rest" log_path="/tmp/action_timer_azrael.log"/>
+
+            <SetPose frame_id="map" position="{table_position}" orientation="{table_orientation}" pose="{table_pose}"/>
+            
+            <ActionTimer start="true" action_name="navigate_to_storage" log_path="/tmp/action_timer_azrael.log"/>
+            <Navigate action_name="/azrael/navigate_to_pose" pose_target="{table_pose}" behavior_tree=""/>
+            <ActionTimer start="false" action_name="navigate_to_storage" log_path="/tmp/action_timer_azrael.log"/>
+            
+            <ActionTimer start="true" action_name="move_to_sense" log_path="/tmp/action_timer_azrael.log"/>
+            <!-- <Sleep msec="1500" /> -->
+            <MoveToJoint action_name="/move_to_joint" joint_target="{azrael_front}"/>
+            <!-- <Sleep msec="1000" /> -->
+            <ActionTimer start="false" action_name="move_to_sense" log_path="/tmp/action_timer_azrael.log"/>
+
+            <ActionTimer start="true" action_name="localize" log_path="/tmp/action_timer_azrael.log"/>
+            <RetryUntilSuccessful num_attempts="-1">
+                <CanTransform target_frame="azrael/base_link" source_frame="aruco_marker_0" timeout_ms="0"/>
+            </RetryUntilSuccessful>
+            <Sleep msec="2000" />
+            <CanTransform target_frame="azrael/base_link" source_frame="aruco_marker_0" timeout_ms="0"/>
+            <CanTransform target_frame="azrael/base_link" source_frame="box_pick" timeout_ms="0"/>
+            <Sleep msec="2000" />
+            <ActionTimer start="false" action_name="localize" log_path="/tmp/action_timer_azrael.log"/>
+
+            <ActionTimer start="true" action_name="pick_box" log_path="/tmp/action_timer_azrael.log"/>
+            <MoveToPose action_name="/move_to_pose" cartesian_motion="true" frame_id="box_pick" position="0.0; 0.0; 0.0" orientation="0.0; 0.0; 0.0; 1.0"/>
+            <GripperCommand action_name="/gripper_action_controller/gripper_cmd" position="0.8" max_effort="100.0"/>
+            <GripperCommand action_name="/gripper_action_controller/gripper_cmd" position="0.9" max_effort="100.0"/>
+            <ActionTimer start="false" action_name="pick_box" log_path="/tmp/action_timer_azrael.log"/>
+
+            <ActionTimer start="true" action_name="move_to_rest" log_path="/tmp/action_timer_azrael.log"/>
+            <MoveToPose action_name="/move_to_pose" cartesian_motion="true" frame_id="azrael/base_link" position="{azrael_ur_rest_position}" orientation="{azrael_ur_rest_orientation}"/>
+            <ActionTimer start="false" action_name="move_to_rest" log_path="/tmp/action_timer_azrael.log"/>
+
+            <ActionTimer start="true" action_name="navigate_to_sharework" log_path="/tmp/action_timer_azrael.log"/>
+            <SetPose frame_id="map" position="{sharework_position}" orientation="{sharework_orientation}" pose="{sharework_pose}"/>
+            <Navigate action_name="/azrael/navigate_to_pose" pose_target="{sharework_pose}" behavior_tree=""/>
+            <ActionTimer start="false" action_name="navigate_to_sharework" log_path="/tmp/action_timer_azrael.log"/>
+            <Sleep msec="1500" />
+
+            <ActionTimer start="true" action_name="move_to_place" log_path="/tmp/action_timer_azrael.log"/>
+            <MoveToPose action_name="/move_to_pose" cartesian_motion="true" frame_id="azrael/base_link" position="{sharework_ur_approach_position}" orientation="{sharework_ur_approach_orientation}"/>
+            <MoveToPose action_name="/move_to_pose" cartesian_motion="true" frame_id="azrael/base_link" position="{sharework_ur_position}" orientation="{sharework_ur_orientation}"/>
+            <ActionTimer start="false" action_name="move_to_place" log_path="/tmp/action_timer_azrael.log"/>
+
+            <ActionTimer start="true" action_name="place" log_path="/tmp/action_timer_azrael.log"/>
+            <GripperCommand action_name="/gripper_action_controller/gripper_cmd" position="0.0" max_effort="20.0"/>
+            <MoveToPose action_name="/move_to_pose" cartesian_motion="true" frame_id="azrael/base_link" position="{sharework_ur_approach_position}" orientation="{sharework_ur_approach_orientation}"/>
+            <MoveToPose action_name="/move_to_pose" cartesian_motion="true" frame_id="azrael/base_link" position="{azrael_ur_rest_position}" orientation="{azrael_ur_rest_orientation}"/>
+            <ActionTimer start="false" action_name="place" log_path="/tmp/action_timer_azrael.log"/>
+
+            <ActionTimer start="true" action_name="navigate_to_rest" log_path="/tmp/action_timer_azrael.log"/>
+            <SetPose frame_id="map" position="{azrael_rest_position}" orientation="{azrael_rest_orientation}" pose="{rest_pose}"/>
+            <Navigate action_name="/azrael/navigate_to_pose" pose_target="{rest_pose}" behavior_tree=""/>
+            <ActionTimer start="false" action_name="navigate_to_rest" log_path="/tmp/action_timer_azrael.log"/>
+
+        </Sequence>
+     </BehaviorTree>
+ </root>  

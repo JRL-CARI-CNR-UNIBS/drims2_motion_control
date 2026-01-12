@@ -61,7 +61,7 @@ class MotionServer(Node):
                 end_effector_name=self.end_effector_name,
                 group_name=self.move_group_name,
                 callback_group=self.callback_group,
-                use_move_group_action=self.get_parameter('use_move_group_action').get_parameter_value().bool_value
+                use_move_group_action= self.get_parameter('use_move_group_action').get_parameter_value().bool_value
             )
             self.moveit2.planner_id = self.get_parameter('planner_id').get_parameter_value().string_value
             self.moveit2.max_velocity = self.get_parameter('max_velocity').get_parameter_value().double_value
@@ -214,7 +214,7 @@ class MotionServer(Node):
         max_motion_retries = self.get_parameter('max_motion_retries').get_parameter_value().integer_value
         if cartesian_motion:
             motion_result = self._move_to_pose_with_retries(goal_pose=goal_pose, 
-                                                            cartesian=True, 
+                                                            cartesian=cartesian_motion, 
                                                             max_attempts=max_motion_retries)
             action_result.result.val = motion_result.val
         else:
@@ -234,6 +234,9 @@ class MotionServer(Node):
                 goal_handle.abort()
                 action_result.result.val = last_ik_result_code.val
                 return action_result
+            motion_result = self._move_to_pose_with_retries(goal_pose=goal_pose, 
+                                                            cartesian=False, 
+                                                            max_attempts=max_motion_retries)
 
             motion_result = self._move_to_configuration_with_retries(robot_configuration, max_motion_retries)
             action_result.result.val = motion_result.val
@@ -266,6 +269,7 @@ class MotionServer(Node):
                 return motion_result
 
             self.get_logger().warn(f"Motion failed with code {motion_result.val if motion_result else 'N/A'}; retrying...")
+            self.internal_node.get_clock().sleep_for(rclpy.duration.Duration(seconds=1.0))
 
         # If all attempts fail
         result_code.val = motion_result.val if motion_result and partial_result else MoveItErrorCodes.FAILURE
@@ -409,6 +413,7 @@ class MotionServer(Node):
         t.transform.rotation = pose_goal.pose.orientation
 
         self.tf_broadcaster.sendTransform(t)
+        
 
     def attach_object_callback(self, request, response):
         self.get_logger().info(f"Attaching object '{request.object_id}' to frame '{request.target_frame_id}'")
@@ -416,8 +421,12 @@ class MotionServer(Node):
                                              link_name=request.target_frame_id,
                                              touch_links=[request.target_frame_id])
         attached = False
+        self.get_logger().info("Verifying attachment...")
         if self.moveit2.update_planning_scene():
+            self.get_logger().info("Into planning scene if.")
+            
             for attached_obj in self.moveit2.planning_scene.robot_state.attached_collision_objects:
+                self.get_logger().info(f"Currently attached object: {attached_obj.object.id}")
                 if attached_obj.object.id == request.object_id:
                     attached = True
 

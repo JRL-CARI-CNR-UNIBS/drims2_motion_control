@@ -1,0 +1,18 @@
+bt_executer_node:
+  ros__parameters:
+    bt_xml_file: application_azrael.xml
+    plugins:
+      - check_dice_face
+    ros_plugins:
+      - move_to_pose
+      - move_to_joint
+      - gripper_command
+      - dice_identification
+      - attach_object
+      - detach_object
+      - omron_navigate_to_pose
+      - can_transform
+      - set_pose
+      - navigate
+      - action_timer
+    bt_package: drims2_behavior_tree

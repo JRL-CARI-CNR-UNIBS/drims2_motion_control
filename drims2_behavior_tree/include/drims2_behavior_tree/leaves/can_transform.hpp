@@ -51,9 +51,17 @@ public:
       if(timeout_ms > 0) {
         auto ok = tf_buffer_->canTransform(target_frame, source_frame, tf2::TimePointZero,
                                            std::chrono::milliseconds(timeout_ms));
+        RCLCPP_INFO(node_->get_logger(),
+                    "CanTransform: from '%s' to '%s' within %d ms is %s",
+                    source_frame.c_str(), target_frame.c_str(), timeout_ms,
+                    ok ? "OK" : "NOT OK");
         return ok ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
       } else {
         auto ok = tf_buffer_->canTransform(target_frame, source_frame, tf2::TimePointZero);
+        RCLCPP_INFO(node_->get_logger(),
+                    "CanTransform: from '%s' to '%s' now() is %s",
+                    source_frame.c_str(), target_frame.c_str(),
+                    ok ? "OK" : "NOT OK");
         return ok ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
       }
     } catch(...) {

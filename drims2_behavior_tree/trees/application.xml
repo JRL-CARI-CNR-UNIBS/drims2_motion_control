@@ -1,0 +1,102 @@
+<root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Sequence>
+            <!-- <Script code=" omron_rest_position:='2.635; -1.800; 0.000' "/>
+            <Script code=" omron_rest_orientation:='0.000; 0.000; 0.719; 0.695' "/> -->
+            <Script code=" omron_rest_position:='14.209; -1.239; 0.000' "/>
+            <Script code=" omron_rest_orientation:='0.000; 0.000; 0.701; 0.713' "/>
+
+            <Script code=" omron_sharework_position:='6.633; -0.522; 0.000' "/>
+            <Script code=" omron_sharework_orientation:='0.000; 0.000; 0.701; 0.713' "/>
+
+
+            <Script code=" techman_side:='-1.5343954420673664; 0.17182693715007388; 0.855067189883221; 0.4702723370103383; 1.5399818219279713;0.1588992374942863' " />
+            <Script code=" techman_front:='0.13253367638639282; -0.011678417030215216; 0.972867593329023; 0.5925145269697426; 1.5656666790612406; 0.2125162602466881' " />
+            <Script code=" techman_rest:='0.1182017418220769; -0.9342837154559549; 1.7155524478461537; 0.7786305384353389; 1.5460860534625418; -0.045343172134392457' " />
+            <Script code=" table_parallel_position:='8.848; -1.025; 0.000' " />
+            <Script code=" table_parallel_orientation:='0.000; 0.000; 0.000; 1.000' " />
+            
+            <Script code=" table_perpendicular_position:='8.858; -1.086; 0.000' " />
+            <Script code=" table_perpendicular_orientation:='0.000; 0.000; -0.695; 0.719' " />
+            <Script code=" pick_position:='-0.099; -0.941; 0.499' " />
+            <Script code=" pick_orientation:='-0.6909454; -0.7229065; -0.0005757; 0.0005502' " />
+            <Script code=" pick_front:='0.727; -0.049; 0.505'"/>
+            <Script code=" pick_front_orientation:='0.066; 0.998; 0.025; 0.004'"/>
+
+            <Script code=" place_approach_sharework:='0.631; -0.054; 0.903' " />
+            <Script code=" place_approach_orientation:='-0.6909454; -0.7229065; -0.0005757; 0.0005502' " />
+
+            <Script code=" place_sharework:='0.803; -0.018; 0.753' " />
+            <Script code=" place_orientation:='-0.002; 0.997; 0.005; 0.075' " />
+
+            <Script code=" place_approach_sharework_joints:='0.17416361133526623; 0.07945373832445436; 0.7410180485698773; 0.7399360727980054; 1.5455339801685684; -1.3180382377385116' " />
+            <Script code=" place_sharework_joints:='0.0845114224520295; 0.09493841384423268; 1.0149835551768358; 0.44898881963161585; 1.5469959224489676; -1.4074725134655526' " />
+            <Script code=" place_sharework_joints_after:='0.08735181691265352; 0.17464139907958323; 0.7584367865746768; 0.6261777486756984; 1.546894855485599; -1.404556352071916' " />
+
+            <ActionTimer start="true" action_name="move_to_rest" log_path="/tmp/action_timer_omron.log"/>
+                <MoveToJoint action_name="/omron/move_to_joint" joint_target="{techman_rest}"/>
+                <Sleep msec="200" />
+                <GripperCommand action_name="/omron/robotiq_gripper_controller/gripper_cmd" position="0.0" max_effort="20.0"/>
+            <ActionTimer start="false" action_name="move_to_rest" log_path="/tmp/action_timer_omron.log"/>
+
+            <ActionTimer start="true" action_name="navigate_to_storage" log_path="/tmp/action_timer_omron.log"/>
+            <OmronNavigateToPose action_name="/omron/goto_goal" frame_id="map" position="{table_perpendicular_position}" orientation="{table_perpendicular_orientation}"/>
+            <Sleep msec="500" />
+            <ActionTimer start="false" action_name="navigate_to_storage" log_path="/tmp/action_timer_omron.log"/>
+
+            <ActionTimer start="true" action_name="move_to_sense" log_path="/tmp/action_timer_omron.log"/>
+            <MoveToJoint action_name="/omron/move_to_joint" joint_target="{techman_front}"/>
+            <ActionTimer start="false" action_name="move_to_sense" log_path="/tmp/action_timer_omron.log"/>
+
+            <ActionTimer start="true" action_name="localize" log_path="/tmp/action_timer_omron.log"/>
+            <Sleep msec="4500" />
+            <ActionTimer start="false" action_name="localize" log_path="/tmp/action_timer_omron.log"/>
+
+            <ActionTimer start="true" action_name="pick_box" log_path="/tmp/action_timer_omron.log"/>
+            <MoveToPose action_name="/omron/move_to_pose" cartesian_motion="true" frame_id="omron/base" position="{pick_front}" orientation="{pick_front_orientation}"/>
+            <GripperCommand action_name="/omron/robotiq_gripper_controller/gripper_cmd" position="0.8" max_effort="20.0"/>
+            <ActionTimer start="false" action_name="pick_box" log_path="/tmp/action_timer_omron.log"/>
+
+            <Sleep msec="500" />
+            <ActionTimer start="true" action_name="move_to_rest" log_path="/tmp/action_timer_omron.log"/>
+            <MoveToJoint action_name="/omron/move_to_joint" joint_target="{techman_rest}"/>
+            <ActionTimer start="false" action_name="move_to_rest" log_path="/tmp/action_timer_omron.log"/>
+            <Sleep msec="100" />
+
+            <ActionTimer start="true" action_name="navigate_to_sharework" log_path="/tmp/action_timer_omron.log"/>
+            <OmronNavigateToPose action_name="/omron/goto_goal" frame_id="map" position="{omron_sharework_position}" orientation="{omron_sharework_orientation}"/>
+            <ActionTimer start="false" action_name="navigate_to_sharework" log_path="/tmp/action_timer_omron.log"/>
+            <Sleep msec="500" />
+
+            <ActionTimer start="true" action_name="move_to_place" log_path="/tmp/action_timer_omron.log"/>
+            <MoveToJoint action_name="/omron/move_to_joint" joint_target="{place_approach_sharework_joints}"/>
+            <ActionTimer start="false" action_name="move_to_place" log_path="/tmp/action_timer_omron.log"/>
+            
+            <Sleep msec="500" />
+
+            <ActionTimer start="true" action_name="place" log_path="/tmp/action_timer_omron.log"/>
+            <MoveToJoint action_name="/omron/move_to_joint" joint_target="{place_sharework_joints}"/>
+            <Sleep msec="500" />
+            <GripperCommand action_name="/omron/robotiq_gripper_controller/gripper_cmd" position="0.0" max_effort="20.0"/>
+            <GripperCommand action_name="/omron/robotiq_gripper_controller/gripper_cmd" position="0.0" max_effort="100.0"/>
+
+            <Sleep msec="500" />
+            <MoveToJoint action_name="/omron/move_to_joint" joint_target="{place_sharework_joints_after}"/>
+            <Sleep msec="500" />
+            <ActionTimer start="false" action_name="place" log_path="/tmp/action_timer_omron.log"/>
+
+            <ActionTimer start="true" action_name="move_to_rest_from_sharework" log_path="/tmp/action_timer_omron.log"/>
+            <MoveToJoint action_name="/omron/move_to_joint" joint_target="{techman_rest}"/>
+            <ActionTimer start="false" action_name="move_to_rest_from_sharework" log_path="/tmp/action_timer_omron.log"/>
+
+            <Sleep msec="500" />
+            <ActionTimer start="true" action_name="navigate_to_rest" log_path="/tmp/action_timer_omron.log"/>
+            <OmronNavigateToPose action_name="/omron/goto_goal" frame_id="map" position="{omron_rest_position}" orientation="{omron_rest_orientation}"/>
+            <ActionTimer start="false" action_name="navigate_to_rest" log_path="/tmp/action_timer_omron.log"/>
+
+            <!-- <MoveToPose action_name="/omron/move_to_pose" cartesian_motion="true" frame_id="omron/base" position="{place_approach_sharework}" orientation="{place_approach_orientation}"/>
+            <Sleep msec="2000" /> -->
+
+        </Sequence>
+     </BehaviorTree>
+ </root>  

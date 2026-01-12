@@ -1,0 +1,69 @@
+Frotn position
+header:
+  stamp:
+    sec: 1762872658
+    nanosec: 637518846
+  frame_id: ''
+name:
+- robotiq_85_left_knuckle_joint
+- azrael/elbow_joint
+- azrael/wrist_1_joint
+- azrael/wrist_3_joint
+- azrael/wrist_2_joint
+- azrael/shoulder_pan_joint
+- azrael/shoulder_lift_joint
+position:
+- 0.0
+- -0.996328592300415
+- -1.7661506138243617
+- 1.710142731666565
+- 1.5779306888580322
+- -1.3784030119525355
+- -1.9489475689330042
+velocity:
+- 0.0
+- -0.0
+- 0.0
+- 0.0
+- 0.0
+- -0.0
+- -0.0
+effort:
+- .nan
+- 4.672410011291504
+- 0.3174026608467102
+- -0.08598592877388
+- 0.03348655253648758
+- -0.6334534287452698
+- 6.040316581726074
+
+
+#Azrael front position più bassa
+- Translation: [-0.003, 0.923, 0.597]
+- Rotation: in Quaternion (xyzw) [0.725, -0.689, -0.001, -0.001]
+
+# Azrael front position più alta
+- Translation: [-0.003, 0.923, 0.667]
+- Rotation: in Quaternion (xyzw) [0.725, -0.689, -0.001, -0.001]
+
+# Azrael pick position
+- Translation: [-0.003, 0.923, 0.472]
+- Rotation: in Quaternion (xyzw) [0.725, -0.689, -0.001, -0.001]
+# Giunti di pick position
+name:
+- robotiq_85_left_knuckle_joint
+- azrael/elbow_joint
+- azrael/wrist_1_joint
+- azrael/wrist_3_joint
+- azrael/wrist_2_joint
+- azrael/shoulder_pan_joint
+- azrael/shoulder_lift_joint
+position:
+- 0.0
+- -1.2441481351852417
+- -1.5374186870506783
+- 1.7116034030914307
+- 1.5781177282333374
+- -1.3785260359393519
+- -1.9298316440977992
+

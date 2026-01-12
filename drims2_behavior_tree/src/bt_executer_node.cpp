@@ -60,7 +60,10 @@ int main(int argc, char ** argv)
 
   RCLCPP_INFO(node->get_logger(), "Loading BT: [%s]", xml_file.c_str());
 
-  BT::Tree tree = factory.createTreeFromFile(xml_file);
+  auto blackboard = BT::Blackboard::create();
+  blackboard->set("node", node); // usefull to share the ROS2 node with the Nav2 BT nodes
+  
+  BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 
   BT::Groot2Publisher publisher(tree);
 

@@ -16,6 +16,7 @@ find_package(moveit_msgs REQUIRED)
 find_package(moveit_core REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2 REQUIRED)
+find_package(nav2_msgs REQUIRED)
 
 set(dependencies
   rclcpp
@@ -27,6 +28,7 @@ set(dependencies
   moveit_core
   tf2_ros
   tf2
+  nav2_msgs
 )
     
 include_directories(include)
@@ -73,6 +75,21 @@ add_library(can_transform SHARED
     src/leaves/can_transform.cpp
 )
 list(APPEND plugin_libs can_transform)
+
+add_library(set_pose SHARED
+    src/leaves/set_pose.cpp
+)
+list(APPEND plugin_libs set_pose)
+
+add_library(navigate SHARED
+    src/leaves/navigate.cpp
+)
+list(APPEND plugin_libs navigate)
+
+add_library(action_timer SHARED
+    src/leaves/action_timer.cpp
+)
+list(APPEND plugin_libs action_timer)
 
 foreach(bt_plugin ${plugin_libs})
   # target_link_libraries(${bt_plugin} ${dependencies})

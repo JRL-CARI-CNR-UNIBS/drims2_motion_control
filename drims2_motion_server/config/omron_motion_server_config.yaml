@@ -1,0 +1,23 @@
+omron:
+  motion_server_node:
+    ros__parameters:
+      move_group_name: "imm"
+      end_effector_name: "omron/tcp"
+      base_link_name: "omron/base"
+      joint_names:
+        - 'omron/joint_1'
+        - 'omron/joint_2'
+        - 'omron/joint_3'
+        - 'omron/joint_4'
+        - 'omron/joint_5'
+        - 'omron/joint_6'
+
+      cartesian_max_step: 0.001 #25
+      cartesian_fraction_threshold: 0.9
+      cartesian_jump_threshold: 0.0
+      cartesian_avoid_collisions: True
+      max_velocity: 0.11
+      max_acceleration: 0.11
+      planner_id: RRTConnect
+      allowed_planning_time: 5.0
+      virtual_end_effector: "omron/tcp"
