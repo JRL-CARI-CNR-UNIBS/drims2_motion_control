@@ -12,4 +12,7 @@ bt_executer_node:
       - detach_object
       - omron_navigate_to_pose
       - can_transform
+      - set_pose
+      - navigate
+      - action_timer
     bt_package: drims2_behavior_tree
